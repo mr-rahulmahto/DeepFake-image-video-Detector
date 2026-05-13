@@ -1,4 +1,4 @@
-# KRYPSIS Forensic Suite  🛡️🔍
+# DeepFake Image & Video Detector  🛡️🔍
 
 **KRYPSIS** is a high-performance, modular digital forensics ecosystem designed for rapid evidence analysis. It bridges the gap between raw data collection and actionable intelligence through a specialized multi-module investigative workflow.
 
