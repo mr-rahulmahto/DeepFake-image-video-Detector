@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, FileVideo, FileImage, FileAudio, X, ShieldAlert, Cpu } from "lucide-react";
+import { Upload, FileVideo, FileImage, FileAudio, X, ShieldAlert, Cpu, ScanLine } from "lucide-react";
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
@@ -42,7 +42,7 @@ export default function FileUpload({ onFileSelect, selectedFile, onClear }: File
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.97 }}
-            className={`relative border-2 border-dashed rounded-xl p-6 sm:p-10 text-center cursor-pointer transition-all duration-300 group
+            className={`relative border border-dashed rounded-lg p-6 sm:p-10 text-center cursor-pointer transition-all duration-300 group overflow-hidden
               ${isDragging
                 ? "border-primary bg-primary/10 glow-cyan"
                 : "border-border hover:border-primary/50 hover:bg-secondary/30"
@@ -52,42 +52,46 @@ export default function FileUpload({ onFileSelect, selectedFile, onClear }: File
             onDrop={handleDrop}
             onClick={() => inputRef.current?.click()}
           >
-            {/* Animated corners */}
-            <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-primary opacity-60" />
-            <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-primary opacity-60" />
-            <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-primary opacity-60" />
-            <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-primary opacity-60" />
+            <div className="absolute inset-0 cyber-grid opacity-35 pointer-events-none" />
+            <div className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-primary opacity-70" />
+            <div className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-primary opacity-70" />
+            <div className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-primary opacity-70" />
+            <div className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-primary opacity-70" />
 
             <motion.div
               animate={{ y: isDragging ? -8 : 0 }}
-              className="flex flex-col items-center gap-4"
+              className="relative flex flex-col items-center gap-4"
             >
               <div className="relative">
-                <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <div className="w-16 h-16 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                   <Upload className="w-8 h-8 text-primary" />
                 </div>
                 {isDragging && (
                   <motion.div
-                    className="absolute inset-0 rounded-full border-2 border-primary"
+                    className="absolute inset-0 rounded-lg border-2 border-primary"
                     animate={{ scale: [1, 1.5, 1.5], opacity: [1, 0, 0] }}
                     transition={{ duration: 1, repeat: Infinity }}
                   />
                 )}
               </div>
               <div>
-                <p className="text-lg font-semibold text-foreground">
-                  {isDragging ? "Release to Upload Evidence" : "Drop Media Evidence Here"}
+                <p className="text-xl font-display font-semibold text-foreground">
+                  {isDragging ? "Release to seal evidence" : "Drop media evidence for intake"}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Supports Video, Image & Audio · Up to 500MB · Encrypted in Transit
+                  Supports video, image, and audio / up to 500MB / encrypted in transit
                 </p>
               </div>
               <div className="flex flex-wrap justify-center gap-2 sm:gap-3 text-xs font-mono">
                 {["MP4", "MOV", "JPG", "PNG", "MP3", "WAV"].map((ext) => (
-                  <span key={ext} className="px-2 py-0.5 rounded bg-secondary text-muted-foreground border border-border">
+                  <span key={ext} className="px-2 py-0.5 rounded bg-secondary/80 text-muted-foreground border border-border">
                     .{ext}
                   </span>
                 ))}
+              </div>
+              <div className="flex items-center gap-2 text-[10px] font-mono text-accent">
+                <ScanLine className="w-3 h-3" />
+                HASH / MIME / SIZE PRECHECK
               </div>
             </motion.div>
 
@@ -107,7 +111,7 @@ export default function FileUpload({ onFileSelect, selectedFile, onClear }: File
             exit={{ opacity: 0, y: -10 }}
             className="glass-card-cyan p-3 sm:p-4 flex items-center gap-3 sm:gap-4"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-secondary border border-border flex items-center justify-center flex-shrink-0">
               {getFileIcon(selectedFile)}
             </div>
             <div className="flex-1 min-w-0">
@@ -115,8 +119,8 @@ export default function FileUpload({ onFileSelect, selectedFile, onClear }: File
               <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-0.5">
                 <span className="text-[10px] sm:text-xs font-mono text-muted-foreground">{formatSize(selectedFile.size)}</span>
                 <span className="text-[10px] sm:text-xs font-mono text-muted-foreground uppercase">{selectedFile.type.split("/")[1]}</span>
-                <span className="flex items-center gap-1 text-[10px] sm:text-xs status-active px-2 py-0.5 rounded-full">
-                  <Cpu className="w-3 h-3" /> <span className="hidden xs:inline sm:inline">Evidence Loaded</span><span className="inline xs:hidden sm:hidden">Loaded</span>
+                <span className="flex items-center gap-1 text-[10px] sm:text-xs status-active px-2 py-0.5 rounded">
+                  <Cpu className="w-3 h-3" /> Evidence Loaded
                 </span>
               </div>
             </div>
